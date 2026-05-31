@@ -1,8 +1,15 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow } from "electron";
 import path from "path";
 
+function createWindow() {
+  const win = new BrowserWindow({
+    width: 1000,
+    height: 700,
+  });
 
-app.on("ready", ()=>{
-    const mainWindow = new BrowserWindow({});
-    mainWindow.loadFile(path.join(app.getAppPath(), '/dist-react/index.html'));
+  win.loadFile("dist-react/index.html");
+}
+
+app.whenReady().then(() => {
+  createWindow();
 });

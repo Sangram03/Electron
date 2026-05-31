@@ -6,7 +6,7 @@
   "main": "src/electron/main.js",
   "scripts": {
     "dev:react": "vite",
-    "dev:electron":"electron .",
+    "dev:electron":"electron src/electron/main.js",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
