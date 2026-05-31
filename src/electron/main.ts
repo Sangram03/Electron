@@ -1,6 +1,7 @@
 import { app, BrowserWindow } from "electron";
 import path from "path";
 import { isDev } from "./util.js";
+import { pollResources } from "./resourceManager.js";
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -19,6 +20,7 @@ function createWindow() {
       path.join(app.getAppPath(), "dist-react", "index.html")
     );
   }
+  pollResources()
 }
 
 app.whenReady().then(() => {
