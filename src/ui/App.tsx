@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
@@ -8,8 +8,13 @@ function App() {
   const [count, setCount] = useState(0)
 
 
-   //    @ts-ignore
-  window.Electron.getStaticData();
+   useEffect(()=> {
+    // @ts-ignore
+    window.electron.subscribeStatistics((stats)=>console.log(stats));
+
+   },[]);
+
+  
 
   return (
     <>
@@ -45,16 +50,7 @@ function App() {
           <p>Your questions, answered</p>
           <ul>
             <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
+              
             </li>
           </ul>
         </div>

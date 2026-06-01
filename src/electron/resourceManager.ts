@@ -1,6 +1,7 @@
 import { BrowserWindow } from "electron";
 import os from "node:os";
 import osUtils from "os-utils";
+import { ipcWebContentsSend } from "./util.js";
 
 const POLLING_INTERVAL = 500;
 
@@ -28,10 +29,13 @@ export function pollResources(mainWindow: BrowserWindow): void {
       totalStorage: storageData.total,
     };
 
-    // Send data to renderer process
-    mainWindow.webContents.send("statistics", statistics);
+    // Send statistics to renderer process
+    ipcWebContentsSend(
+      "statistics",
+      mainWindow.webContents,
+      statistics
+    );
 
-    // Log data in terminal
     console.log(statistics);
   }, POLLING_INTERVAL);
 }
@@ -68,9 +72,8 @@ function getRamUsage(): number {
 }
 
 function getStorageData(): StorageData {
-  // Replace with actual disk usage implementation
   return {
-    total: 0,
+    total: 0, // Replace with actual disk storage
     usage: 0,
   };
 }

@@ -1,8 +1,29 @@
+import { contextBridge, ipcRenderer } from "electron";
 
-const electron = require('electron');
+/* ---------- Types ---------- */
 
-electron.contextBridge.exposeInMainWorld("electron", {
-    subscribeStatistics:(callback:(statics:any) => void)=> callback({}),
-    getStaticData:()=>console.log('static'),
-    
-})
+interface Statistics {
+  cpuUsage: number;
+  ramUsage: number;
+  storageUsage: number;
+  totalStorage: number;
+}
+
+interface StaticData {
+  totalStorage: number;
+  cpuModel: string;
+  totalMemoryGB: number;
+}
+
+interface EventPayloadMapping {
+  statistics: Statistics;
+  getStaticData: StaticData;
+}
+
+interface ElectronAPI {
+  subscribeStatistics: (
+    callback: (statistics: Statistics) => void
+  ) => void;
+
+  getStaticData: () => Promise<StaticData>;
+}

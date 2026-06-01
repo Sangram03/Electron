@@ -9,7 +9,9 @@
         // define where tq put generated JS
         "outDir": "../../dist-electron",
         // ignore errors from depencies
-        "skipLibCheck": true
+        "skipLibCheck": true,
+        // added global types
+        "types": ["../../types.d.ts"]
 
     }
 }
