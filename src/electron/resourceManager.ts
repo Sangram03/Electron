@@ -1,3 +1,4 @@
+import { BrowserWindow } from "electron";
 import os from "node:os";
 import osUtils from "os-utils";
 
@@ -14,18 +15,24 @@ interface StaticData {
   totalMemoryGB: number;
 }
 
-export function pollResources(): void {
+export function pollResources(mainWindow: BrowserWindow): void {
   setInterval(async () => {
     const cpuUsage = await getCpuUsage();
     const ramUsage = getRamUsage();
     const storageData = getStorageData();
 
-    console.log({
-      cpuUsage: `${(cpuUsage * 100).toFixed(2)}%`,
-      ramUsage: `${(ramUsage * 100).toFixed(2)}%`,
-      storageUsage: `${(storageData.usage * 100).toFixed(2)}%`,
-      totalStorage: `${storageData.total} GB`,
-    });
+    const statistics = {
+      cpuUsage: Number((cpuUsage * 100).toFixed(2)),
+      ramUsage: Number((ramUsage * 100).toFixed(2)),
+      storageUsage: Number((storageData.usage * 100).toFixed(2)),
+      totalStorage: storageData.total,
+    };
+
+    // Send data to renderer process
+    mainWindow.webContents.send("statistics", statistics);
+
+    // Log data in terminal
+    console.log(statistics);
   }, POLLING_INTERVAL);
 }
 
@@ -37,7 +44,9 @@ export function getStaticData(): StaticData {
       ? os.cpus()[0].model
       : "Unknown Processor";
 
-  const totalMemoryGB = Math.floor(os.totalmem() / 1024 / 1024 / 1024);
+  const totalMemoryGB = Math.floor(
+    os.totalmem() / 1024 / 1024 / 1024
+  );
 
   return {
     totalStorage,
@@ -59,8 +68,7 @@ function getRamUsage(): number {
 }
 
 function getStorageData(): StorageData {
-  // Placeholder implementation
-  // Replace with node-disk-info or another package
+  // Replace with actual disk usage implementation
   return {
     total: 0,
     usage: 0,

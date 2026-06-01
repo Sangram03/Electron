@@ -2,6 +2,7 @@ import { app, BrowserWindow } from "electron";
 import path from "path";
 import { isDev } from "./util.js";
 import { pollResources } from "./resourceManager.js";
+import { getPreloadPath } from "./pathReslover.js";
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -10,6 +11,7 @@ function createWindow() {
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: false,
+      preload:getPreloadPath(),
     },
   });
 
