@@ -5,7 +5,7 @@ export function isDev(): boolean {
 }
 
 export function ipcMainHandle<
-  Key extends Extract<keyof EventPayloadMapping, string>
+  Key extends keyof EventPayloadMapping
 >(
   key: Key,
   handler: () =>
@@ -18,11 +18,23 @@ export function ipcMainHandle<
 }
 
 export function ipcWebContentsSend<
-  Key extends Extract<keyof EventPayloadMapping, string>
+  Key extends keyof EventPayloadMapping
 >(
   key: Key,
   webContents: WebContents,
   payload: EventPayloadMapping[Key]
 ): void {
   webContents.send(key, payload);
+}
+
+// Generic IPC handler
+export function ipcHandler<
+  Key extends keyof EventPayloadMapping
+>(
+  key: Key,
+  handler: () => EventPayloadMapping[Key] | Promise<EventPayloadMapping[Key]>
+): void {
+  ipcMain.handle(key, async () => {
+    return await handler();
+  });
 }

@@ -1,17 +1,17 @@
-import { app, BrowserWindow, ipcMain } from "electron";
+import { app, BrowserWindow, WebContents } from "electron";
 import path from "node:path";
-import { isDev } from "./util.js";
-import { pollResources } from "./resourceManager.js";
+import { ipcHandler, isDev } from "./util.js";
+import { getStaticData, pollResources } from "./resourceManager.js";
 import { getPreloadPath } from "./pathReslover.js";
 
-function createWindow() {
+function createWindow(): void {
   const mainWindow = new BrowserWindow({
     width: 1000,
     height: 700,
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: false,
-      preload:getPreloadPath(),
+      preload: getPreloadPath(),
     },
   });
 
@@ -22,12 +22,22 @@ function createWindow() {
       path.join(app.getAppPath(), "dist-react", "index.html")
     );
   }
-  pollResources(mainWindow)
 
-  ipcMain.handle("getStaticsData",()=>{
-    return  null;
-    
-  })
+  pollResources(mainWindow);
+
+  ipcHandler("getStaticData", () => {
+    return getStaticData();
+  });
+}
+
+export function ipcWebContentsSend<
+  Key extends keyof EventPayloadMapping
+>(
+  key: Key,
+  webContents: WebContents,
+  payload: EventPayloadMapping[Key]
+): void {
+  webContents.send(key, payload);
 }
 
 app.whenReady().then(() => {
